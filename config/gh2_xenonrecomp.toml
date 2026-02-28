@@ -1,0 +1,42 @@
+# Guitar Hero II - XenonRecomp Configuration
+# First pass: analyze the PE binary and generate function table
+#
+# Usage: XenonRecomp config/gh2_xenonrecomp.toml
+
+[main]
+file_path = "assets/default.xex"
+out_directory_path = "ppc"
+# switch_table_file_path = "config/gh2_switch_tables.toml"
+
+# ABI Register Save/Restore Addresses
+# These need to be found by running: python tools/find_abi_addrs.py assets/default.pe
+# TODO: Run find_abi_addrs.py and fill in the actual addresses
+# savegprlr_14_address = 0x00000000
+# restgprlr_14_address = 0x00000000
+# savefpr_14_address = 0x00000000
+# restfpr_14_address = 0x00000000
+# savevmx_14_address = 0x00000000
+# restvmx_14_address = 0x00000000
+# savevmx_64_address = 0x00000000
+# restvmx_64_address = 0x00000000
+
+# setjmp/longjmp (from re-gh2 config)
+setjmp_address = 0x82690C90
+longjmp_address = 0x82690A40
+
+# Manual function definitions
+# Add entries here as XenonRecomp identifies switch table boundary errors
+functions = [
+    # TODO: Will be populated as analysis progresses
+]
+
+[optimizations]
+# All optimizations DISABLED for initial recompilation pass
+skip_lr = false
+skip_msr = false
+ctr_as_local = false
+xer_as_local = false
+reserved_as_local = false
+cr_as_local = false
+non_argument_as_local = false
+non_volatile_as_local = false
