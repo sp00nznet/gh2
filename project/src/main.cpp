@@ -1,6 +1,8 @@
 // gh2 - ReXGlue Recompiled Project
 // Guitar Hero II Static Recompilation
 
+// Generated headers will be named gh2_config.h / gh2_init.h by rexglue codegen
+// based on project_name = "gh2" in the TOML config
 #include "gh2_config.h"
 #include "gh2_init.h"
 #include "settings.h"
@@ -520,6 +522,6 @@ private:
 XE_DEFINE_WINDOWED_APP(gh2, Gh2App::Create)
 
 // Native implementations for C library functions
-GUEST_FUNCTION_HOOK(rex_sub_8239CA70, memset)
-GUEST_FUNCTION_HOOK(rex_sub_8239CB70, memcpy)
-GUEST_FUNCTION_HOOK(rex_sub_8239D4F0, memmove)
+GUEST_FUNCTION_HOOK(gh2_sub_8239CA70, memset)
+GUEST_FUNCTION_HOOK(gh2_sub_8239CB70, memcpy)
+GUEST_FUNCTION_HOOK(gh2_sub_8239D4F0, memmove)

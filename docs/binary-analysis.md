@@ -1,9 +1,24 @@
 # Guitar Hero II - Binary Analysis Notes
 
+## Disc Image
+
+- **Format**: XGD2 Xbox 360 DVD
+- **ISO Size**: 7,835,492,352 bytes (~7.3 GB)
+- **XDVDFS partition offset**: 0x0FDA0000
+- **Root dir sector**: 748302 (encrypted)
+- **XEX2 signatures found**: 26 (main + dashboard/utility XEXs)
+- **Main executable candidate**: 0x006AB56000 (flags=0x01, PE offset=0x3000)
+
+The disc content is encrypted with standard Xbox 360 encryption.
+Use `extract-xiso` or similar tool that handles Xbox 360 disc decryption
+to extract the game files into `assets/`.
+
 ## XEX Information
 
 - **Title**: Guitar Hero II
 - **Platform**: Xbox 360
+- **Developer**: Harmonix / Budcat Creations (360 port)
+- **Publisher**: Activision / RedOctane
 - **Title ID**: TBD (extract with `parse_xex_imports.py`)
 - **Encryption**: AES-128-CBC (standard Xbox 360 retail key)
 - **Compression**: LZX or basic block (TBD)
