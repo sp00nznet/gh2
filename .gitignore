@@ -1,0 +1,50 @@
+# Build outputs
+out/
+project/out/
+
+# Generated code (from ReXGlue codegen)
+generated/*.cpp
+generated/*.h
+generated/*.cmake
+
+# Game assets (user must provide their own)
+assets/*
+!assets/.gitkeep
+
+# Extracted binaries
+*.pe
+*.bin
+
+# IDE
+.idea/
+.vs/
+.vscode/
+*.suo
+*.user
+*.sln
+*.vcxproj*
+CMakeSettings.json
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Game ISOs and archives
+*.zip
+*.iso
+*.xex
+*.nfo
+
+# Crash logs
+*_crash.log
+*_stderr.log
+
+# Settings (user-specific)
+*_settings.toml
+
+# Python
+__pycache__/
+*.pyc
+
+# Claude
+.claude/
