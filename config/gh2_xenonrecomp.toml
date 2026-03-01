@@ -4,21 +4,19 @@
 # Usage: XenonRecomp config/gh2_xenonrecomp.toml
 
 [main]
-file_path = "assets/default.xex"
-out_directory_path = "ppc"
-# switch_table_file_path = "config/gh2_switch_tables.toml"
+file_path = "../assets/Guitar Hero II (USA, Europe) (En,Fr,De,Es,It)/default.xex"
+out_directory_path = "../ppc"
+switch_table_file_path = "gh2_switch_tables.toml"
 
-# ABI Register Save/Restore Addresses
-# These need to be found by running: python tools/find_abi_addrs.py assets/default.pe
-# TODO: Run find_abi_addrs.py and fill in the actual addresses
-# savegprlr_14_address = 0x00000000
-# restgprlr_14_address = 0x00000000
-# savefpr_14_address = 0x00000000
-# restfpr_14_address = 0x00000000
-# savevmx_14_address = 0x00000000
-# restvmx_14_address = 0x00000000
-# savevmx_64_address = 0x00000000
-# restvmx_64_address = 0x00000000
+# ABI Register Save/Restore Addresses (found by find_abi_addrs.py)
+savegprlr_14_address = 0x8239B9E0
+restgprlr_14_address = 0x8239BA30
+savefpr_14_address = 0x8239D2A0
+restfpr_14_address = 0x8239D2EC
+savevmx_14_address = 0x826913F0
+restvmx_14_address = 0x82691688
+savevmx_64_address = 0x82691484
+restvmx_64_address = 0x8269171C
 
 # setjmp/longjmp (from re-gh2 config)
 setjmp_address = 0x82690C90

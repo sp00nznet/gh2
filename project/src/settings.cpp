@@ -23,6 +23,7 @@ Gh2Settings LoadSettings(const std::filesystem::path& path) {
 
         s.show_fps = tbl["debug"]["show_fps"].value_or(s.show_fps);
         s.show_console = tbl["debug"]["show_console"].value_or(s.show_console);
+        s.unlock_all_songs = tbl["debug"]["unlock_all_songs"].value_or(s.unlock_all_songs);
     } catch (const toml::parse_error&) {
         // Parse error: return defaults
     }
@@ -52,4 +53,5 @@ void SaveSettings(const std::filesystem::path& path, const Gh2Settings& s) {
     f << "[debug]\n";
     f << "show_fps = " << (s.show_fps ? "true" : "false") << "\n";
     f << "show_console = " << (s.show_console ? "true" : "false") << "\n";
+    f << "unlock_all_songs = " << (s.unlock_all_songs ? "true" : "false") << "\n";
 }

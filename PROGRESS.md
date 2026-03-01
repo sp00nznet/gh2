@@ -17,41 +17,44 @@
 - [x] PPC config header with safe indirect call macro
 - [x] Documentation (workflow, binary analysis, speed fixes)
 
-## Phase 2: Binary Analysis (IN PROGRESS)
+## Phase 2: Binary Analysis (DONE)
 
 - [x] Disc image structure identified (XDVDFS at 0x0FDA0000)
 - [x] XEX2 signatures located (26 found)
 - [x] Function mappings imported from re-gh2 (~1,200+ functions)
 - [x] setjmp/longjmp addresses known
 - [x] memset/memcpy/memmove hooks configured
-- [ ] Extract game files from ISO (needs extract-xiso)
-- [ ] Extract PE from XEX
-- [ ] Run find_abi_addrs.py for ABI helpers
-- [ ] Run parse_xex_imports.py for full import list
-- [ ] Run extract_switch_tables.py
-- [ ] Run find_missing_vtable_funcs.py
+- [x] Extract game files from ISO (extract-xiso compiled and run)
+- [x] Extract PE from XEX (8.9MB, PowerPC, 16 sections, valid MZ header)
+- [x] Run find_abi_addrs.py for ABI helpers (8/8 found, setjmp/longjmp from re-gh2)
+- [x] Run parse_xex_imports.py (2 libraries: xam.xex, xboxkrnl.exe)
+- [x] Run extract_switch_tables.py (74 switch tables, lwzx pattern)
+- [ ] Run find_missing_vtable_funcs.py (needs generated code, deferred to Phase 3)
 
-## Phase 3: First Boot (TODO)
+## Phase 3: First Boot (DONE)
 
-- [ ] XenonRecomp pass (with patches)
-- [ ] ReXGlue codegen
-- [ ] Resolve compilation errors
-- [ ] First successful build
-- [ ] Boot to black screen
-- [ ] Boot to Harmonix/RedOctane logos
-- [ ] Boot to main menu
+- [x] ReXGlue codegen (34,942 functions analyzed, 34,763 recompiled)
+- [x] CMake configure (Clang 21.1.8, Ninja Multi-Config)
+- [x] Resolve compilation errors (1 missing include)
+- [x] First successful build (gh2.exe, 45.7MB)
+- [x] Boot to black screen
+- [x] Boot to Harmonix/RedOctane logos
+- [x] Audio plays on boot
+- [x] Keyboard input working
+- [x] Boot to main menu
 
-## Phase 4: Gameplay (TODO)
+## Phase 4: Gameplay (DONE)
 
-- [ ] Menu navigation
-- [ ] Song selection
-- [ ] Gameplay renders
-- [ ] Note highway visible
-- [ ] Input works (keyboard)
+- [x] Menu navigation
+- [x] Song selection
+- [x] Gameplay renders
+- [x] Note highway visible
+- [x] Input works (keyboard)
 - [ ] Input works (controller)
-- [ ] Audio plays
-- [ ] Scoring works
-- [ ] Star Power works
+- [x] Audio plays
+- [x] Scoring works
+- [x] Star Power works
+- [x] Debug unlock all songs (hooks is_unlocked at 0x82285C00)
 
 ## Phase 5: Polish (TODO)
 

@@ -5,8 +5,8 @@
 # Or:    cmake --build . --target gh2_codegen
 
 project_name = "gh2"
-file_path = "assets/default.xex"
-out_directory_path = "generated"
+file_path = "../assets/Guitar Hero II (USA, Europe) (En,Fr,De,Es,It)/default.xex"
+out_directory_path = "../generated"
 
 # Code generation options (conservative - all disabled for initial pass)
 skip_lr = false
@@ -18,6 +18,16 @@ reserved_as_local = false
 non_argument_as_local = false
 non_volatile_as_local = false
 generate_exception_handlers = false
+
+# ABI Register Save/Restore Addresses (found by find_abi_addrs.py)
+savegprlr_14_address = 0x8239B9E0
+restgprlr_14_address = 0x8239BA30
+savefpr_14_address = 0x8239D2A0
+restfpr_14_address = 0x8239D2EC
+savevmx_14_address = 0x826913F0
+restvmx_14_address = 0x82691688
+savevmx_64_address = 0x82691484
+restvmx_64_address = 0x8269171C
 
 setjmp_address = 0x82690C90
 longjmp_address = 0x82690A40

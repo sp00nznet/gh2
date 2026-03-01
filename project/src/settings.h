@@ -22,6 +22,7 @@ struct Gh2Settings {
     // [debug]
     bool show_fps = true;
     bool show_console = false;
+    bool unlock_all_songs = true;
 };
 
 // Load settings from TOML file. Returns defaults if file doesn't exist.

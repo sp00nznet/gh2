@@ -37,6 +37,7 @@ if(WIN32)
         src/settings.cpp
         src/menu.cpp
         src/keyboard_driver.cpp
+        src/unlocks.cpp
         ${ENTRY_POINT_SRC}
         ${GENERATED_SOURCES}
     )
@@ -48,6 +49,7 @@ else()
         src/settings.cpp
         src/menu.cpp
         src/keyboard_driver.cpp
+        src/unlocks.cpp
         ${ENTRY_POINT_SRC}
         ${GENERATED_SOURCES}
     )

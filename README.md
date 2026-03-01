@@ -36,6 +36,14 @@ You bought a Les Paul controller.
 
 **Now it's back. Running natively on Windows 11. No emulator. No compromises.**
 
+<p align="center">
+  <img src="images/guitarhero2.png" width="720" alt="Main Menu" />
+</p>
+<p align="center">
+  <img src="images/game.png" width="360" alt="Gameplay" />
+  <img src="images/song.png" width="360" alt="Song Select" />
+</p>
+
 ## What Is This?
 
 This is a **static recompilation** of Guitar Hero II's Xbox 360 executable.
@@ -73,19 +81,17 @@ Built on the shoulders of giants:
 | Component | Status |
 |-----------|--------|
 | XEX Extraction | Done |
-| PE Analysis | Done |
-| Function Discovery | ~1,200+ functions mapped |
-| ABI Helpers | Found (setjmp/longjmp identified) |
-| Switch Tables | In progress |
-| XenonRecomp Pass | In progress |
-| ReXGlue Codegen | In progress |
-| Boot to Menu | In progress |
-| Gameplay | In progress |
-| Audio | Not started |
-| Input (Guitar Controller) | Not started |
-| ARKless File Loading | Implemented (from re-gh2) |
-| Settings/Menu UI | Framework ready |
-| Keyboard Input | Framework ready |
+| PE Analysis | Done (8.9MB PE, 16 sections) |
+| Function Discovery | 34,942 functions analyzed |
+| ReXGlue Codegen | Done (34,763 functions recompiled) |
+| Boot to Menu | Working |
+| Gameplay | Working |
+| Audio | Working |
+| Keyboard Input | Working |
+| ARKless File Loading | Working |
+| Settings/Menu UI | Working |
+| Unlock All Songs | Working (debug setting) |
+| Guitar Controller | Not yet tested |
 
 ## Project Structure
 
@@ -103,6 +109,7 @@ gh2/
       settings.cpp/.h      # TOML-based user settings persistence
       menu.cpp/.h          # Win32 menu bar + ImGui config dialogs
       keyboard_driver.cpp/.h  # Keyboard-to-guitar input mapping
+      unlocks.cpp/.h       # Debug song unlock (bypass career progression)
       test_boot.cpp        # Console-mode crash isolation harness
   tools/                   # Extraction & analysis scripts
     patches/               # XenonRecomp instruction patches

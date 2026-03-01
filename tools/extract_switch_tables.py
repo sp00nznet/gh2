@@ -12,7 +12,7 @@ import sys
 import os
 
 PE_BASE = 0x82000000
-PE_FILE = os.path.join(os.path.dirname(__file__), "..", "extracted", "default_pe.exe")
+PE_FILE = os.path.join(os.path.dirname(__file__), "..", "assets", "default_pe.bin")
 
 # Pattern: add r12,r12,r0 (7D8C0214) + mtctr r12 (7D8903A6) + bctr (4E800420)
 PATTERN = bytes.fromhex("7D8C0214" "7D8903A6" "4E800420")
@@ -291,7 +291,7 @@ def find_switch_info(data, add_offset):
 
             target = (base_addr + entry_val * entry_scale) & 0xFFFFFFFF
             # Check if target is in code range and 4-byte aligned (PPC instructions)
-            if target < 0x82000000 or target >= 0x82300000:
+            if target < 0x82000000 or target >= 0x82730000:
                 break
             if (target & 3) != 0:
                 break
@@ -324,24 +324,14 @@ def main():
 
     # Manual overrides for tables where auto-detection fails
     # (bounds check too far away, uses bgtlr, or no explicit bounds check)
-    SIZE_OVERRIDES = {
-        0x82140EB0: 29,   # inflate: state 0-28, no bounds check (struct field)
-        0x82147BC0: 30,   # cmplwi cr6,r11,29 + bgtlr cr6
-        0x820B53D8: 241,  # cmplwi cr6,r10,240 + bgt cr6
-        0x820B4FDC: 188,  # cmplwi cr6,r3,187 + bgt cr6
-    }
+    # TODO: Add GH2-specific overrides after manual verification
+    SIZE_OVERRIDES = {}
 
     # Cross-function switches: bctr is in a small trampoline function but targets
     # are in a different (larger) function. XenonRecomp can't generate goto for
     # cross-function jumps, so exclude these and let PPC_CALL_INDIRECT_FUNC handle them.
-    EXCLUDE_BCTRS = {
-        0x820D6660,   # targets in sub_820D6664
-        0x82147BC0,   # targets in sub_82147BC4
-        0x821499E4,   # targets in sub_821499E8
-        0x8214B160,   # targets in sub_8214B164
-        0x8214B314,   # targets in sub_8214B318
-        0x82257B60,   # targets in sub_82257B64
-    }
+    # TODO: Add GH2-specific exclusions after manual verification
+    EXCLUDE_BCTRS = set()
 
     switches = []
     pos = 0
@@ -355,7 +345,7 @@ def main():
         bctr_addr = bctr_offset + PE_BASE
 
         # Verify this is within code range
-        if bctr_addr < 0x82000000 or bctr_addr >= 0x82300000:
+        if bctr_addr < 0x82000000 or bctr_addr >= 0x82730000:
             pos = idx + 4
             continue
 
@@ -396,7 +386,7 @@ def main():
         pos = idx + 12
 
     # Output TOML
-    print(f"# Auto-generated switch tables for Crazy Taxi (XBLA)")
+    print(f"# Auto-generated switch tables for Guitar Hero II (Xbox 360)")
     print(f"# Found {len(switches)} switch table sites")
     print()
 

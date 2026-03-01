@@ -7,6 +7,8 @@
 #include "gh2_init.h"
 #include "settings.h"
 #include "menu.h"
+#include "keyboard_driver.h"
+#include "unlocks.h"
 
 #include <rex/cvar.h>
 #include <rex/filesystem.h>
@@ -25,6 +27,8 @@
 #include <rex/ui/imgui_dialog.h>
 #include <rex/ui/ui_event.h>
 #include <rex/ui/virtual_key.h>
+#include <rex/runtime/guest/function.h>
+#include <rex/input/input_system.h>
 
 #include <imgui.h>
 
@@ -314,6 +318,9 @@ public:
         REXCVAR_SET(draw_resolution_scale_x, settings_.resolution_scale);
         REXCVAR_SET(draw_resolution_scale_y, settings_.resolution_scale);
 
+        // Apply debug unlock setting
+        g_unlock_all_songs = settings_.unlock_all_songs;
+
         // Hide console on startup if configured
         ApplyConsoleVisibility(settings_.show_console);
 
@@ -363,6 +370,11 @@ public:
         window_->AddListener(this);
         window_->AddInputListener(this, 0);
         window_->Open();
+
+        // Register keyboard input driver
+        auto kbd = std::make_unique<KeyboardInputDriver>(window_.get());
+        kbd->Setup();
+        runtime_->kernel_state()->input_system()->InsertDriverFront(std::move(kbd));
 
         // Setup graphics presenter and ImGui
         auto* graphics_system = runtime_->graphics_system();

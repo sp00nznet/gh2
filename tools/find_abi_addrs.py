@@ -33,9 +33,9 @@ import sys
 
 BASE_ADDR = 0x82000000
 
-XEX_PATH = r"E:\vig8\extracted\default.xex"
-PE_PATH  = r"E:\vig8\tools\default_pe.bin"
-EXTRACT_EXE = r"E:\vig8\extract_pe.exe"
+XEX_PATH = r"assets\Guitar Hero II (USA, Europe) (En,Fr,De,Es,It)\default.xex"
+PE_PATH  = r"assets\default_pe.bin"
+EXTRACT_EXE = None  # Use extract_pe.py instead
 
 
 # ============================================================================
