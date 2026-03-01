@@ -17,6 +17,7 @@
 
 #include <rex/input/input_driver.h>
 #include <rex/ui/window_listener.h>
+#include <rex/ui/virtual_key.h>
 
 #include <atomic>
 #include <cstdint>
@@ -50,9 +51,15 @@ public:
 private:
     uint16_t MapKeyToButton(rex::ui::VirtualKey key);
 
+    // Button-index to XInput VK mapping (matches X_INPUT_GAMEPAD_BUTTON bit order)
+    static rex::ui::VirtualKey ButtonIndexToVK(uint8_t idx);
+
     std::atomic<uint16_t> buttons_{0};
     std::atomic<uint8_t> left_trigger_{0};
     std::atomic<uint8_t> right_trigger_{0};
-    uint32_t packet_number_ = 0;
+    uint32_t packet_number_ = 1;
     uint16_t prev_buttons_ = 0;
+
+    // Keystroke tracking (for GetKeystroke)
+    uint16_t keystroke_prev_buttons_ = 0;
 };

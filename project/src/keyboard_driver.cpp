@@ -35,11 +35,11 @@ uint16_t KeyboardInputDriver::MapKeyToButton(VirtualKey key) {
         case VirtualKey::kS:     case VirtualKey::kDown:  return X_INPUT_GAMEPAD_DPAD_DOWN;
         case VirtualKey::kA:     case VirtualKey::kLeft:  return X_INPUT_GAMEPAD_DPAD_LEFT;
         case VirtualKey::kD:     case VirtualKey::kRight: return X_INPUT_GAMEPAD_DPAD_RIGHT;
-        // Fret buttons (Green=A, Red=B, Yellow=X, Blue=Y, Orange=LB)
+        // Fret buttons (Green=A, Red=B, Yellow=Y, Blue=X, Orange=LB)
         case VirtualKey::kZ:     case VirtualKey::kJ:     return X_INPUT_GAMEPAD_A;
         case VirtualKey::kX:     case VirtualKey::kK:     return X_INPUT_GAMEPAD_B;
-        case VirtualKey::kC:     case VirtualKey::kL:     return X_INPUT_GAMEPAD_X;
-        case VirtualKey::kV:                              return X_INPUT_GAMEPAD_Y;
+        case VirtualKey::kC:     case VirtualKey::kL:     return X_INPUT_GAMEPAD_Y;      // Yellow
+        case VirtualKey::kV:                              return X_INPUT_GAMEPAD_X;       // Blue
         case VirtualKey::kB:                              return X_INPUT_GAMEPAD_LEFT_SHOULDER;
         // System
         case VirtualKey::kReturn:                         return X_INPUT_GAMEPAD_START;
@@ -49,6 +49,29 @@ uint16_t KeyboardInputDriver::MapKeyToButton(VirtualKey key) {
         case VirtualKey::kE:                              return X_INPUT_GAMEPAD_RIGHT_SHOULDER;
         default:                                          return 0;
     }
+}
+
+// Maps button bit index (0-15) to XInput VK_PAD virtual key
+VirtualKey KeyboardInputDriver::ButtonIndexToVK(uint8_t idx) {
+    static constexpr VirtualKey kMap[16] = {
+        VirtualKey::kXInputPadDpadUp,       // bit 0
+        VirtualKey::kXInputPadDpadDown,     // bit 1
+        VirtualKey::kXInputPadDpadLeft,     // bit 2
+        VirtualKey::kXInputPadDpadRight,    // bit 3
+        VirtualKey::kXInputPadStart,        // bit 4
+        VirtualKey::kXInputPadBack,         // bit 5
+        VirtualKey::kXInputPadLThumbPress,  // bit 6
+        VirtualKey::kXInputPadRThumbPress,  // bit 7
+        VirtualKey::kXInputPadLShoulder,    // bit 8
+        VirtualKey::kXInputPadRShoulder,    // bit 9
+        VirtualKey::kNone,                  // bit 10 (guide)
+        VirtualKey::kNone,                  // bit 11 (unused)
+        VirtualKey::kXInputPadA,            // bit 12
+        VirtualKey::kXInputPadB,            // bit 13
+        VirtualKey::kXInputPadX,            // bit 14
+        VirtualKey::kXInputPadY,            // bit 15
+    };
+    return (idx < 16) ? kMap[idx] : VirtualKey::kNone;
 }
 
 void KeyboardInputDriver::OnKeyDown(KeyEvent& e) {
@@ -82,7 +105,7 @@ X_RESULT KeyboardInputDriver::GetCapabilities(uint32_t user_index,
     if (out_caps) {
         std::memset(out_caps, 0, sizeof(*out_caps));
         out_caps->type = 0x01;       // XINPUT_DEVTYPE_GAMEPAD
-        out_caps->sub_type = 0x01;   // XINPUT_DEVSUBTYPE_GAMEPAD
+        out_caps->sub_type = 0x06;   // XINPUT_DEVSUBTYPE_GUITAR
         out_caps->gamepad.buttons = 0xFFFF;
         out_caps->gamepad.left_trigger = 0xFF;
         out_caps->gamepad.right_trigger = 0xFF;
@@ -123,6 +146,47 @@ X_RESULT KeyboardInputDriver::SetState(uint32_t user_index,
 
 X_RESULT KeyboardInputDriver::GetKeystroke(uint32_t user_index, uint32_t flags,
                                             X_INPUT_KEYSTROKE* out_keystroke) {
-    if (user_index != 0) return X_ERROR_DEVICE_NOT_CONNECTED;
+    bool user_any = (user_index == 0xFF);
+    if (user_index != 0 && !user_any) return X_ERROR_DEVICE_NOT_CONNECTED;
+    if (!out_keystroke) return X_ERROR_BAD_ARGUMENTS;
+
+    uint16_t current = buttons_.load(std::memory_order_relaxed);
+    uint16_t changed = current ^ keystroke_prev_buttons_;
+
+    if (!changed) return X_ERROR_EMPTY;
+
+    // Process one button change per call (UP events first, then DOWN)
+    for (int pass = 0; pass < 2; pass++) {
+        for (uint8_t i = 0; i < 16; i++) {
+            uint16_t mask = uint16_t(1) << i;
+            if (!(changed & mask)) continue;
+
+            VirtualKey vk = ButtonIndexToVK(i);
+            if (vk == VirtualKey::kNone) continue;
+
+            bool is_pressed = (current & mask) != 0;
+
+            // Pass 0: UP events only. Pass 1: DOWN events only.
+            if (pass == 0 && is_pressed) continue;
+            if (pass == 1 && !is_pressed) continue;
+
+            out_keystroke->virtual_key = uint16_t(vk);
+            out_keystroke->unicode = 0;
+            out_keystroke->user_index = 0;
+            out_keystroke->hid_code = 0;
+            out_keystroke->flags = is_pressed
+                ? X_INPUT_KEYSTROKE_KEYDOWN
+                : X_INPUT_KEYSTROKE_KEYUP;
+
+            // Update tracked state for this button
+            if (is_pressed)
+                keystroke_prev_buttons_ |= mask;
+            else
+                keystroke_prev_buttons_ &= ~mask;
+
+            return X_ERROR_SUCCESS;
+        }
+    }
+
     return X_ERROR_EMPTY;
 }

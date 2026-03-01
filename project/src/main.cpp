@@ -341,6 +341,9 @@ public:
         runtime_ = std::make_unique<rex::Runtime>(game_dir);
         runtime_->set_app_context(&app_context());
 
+        // Install unlock hooks into the function table before runtime reads it
+        InstallUnlockHooks();
+
         auto status = runtime_->Setup(
             static_cast<uint32_t>(PPC_CODE_BASE),
             static_cast<uint32_t>(PPC_CODE_SIZE),

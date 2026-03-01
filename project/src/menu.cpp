@@ -2,6 +2,7 @@
 
 #include "menu.h"
 #include "settings.h"
+#include "unlocks.h"
 
 #include <rex/ui/menu_item.h>
 #include <rex/ui/window.h>
@@ -119,12 +120,13 @@ public:
           settings_path_(settings_path), on_done_(std::move(on_done)) {
         show_fps_ = settings->show_fps;
         show_console_ = settings->show_console;
+        unlock_all_songs_ = settings->unlock_all_songs;
     }
 
 protected:
     void OnDraw(ImGuiIO& io) override {
         (void)io;
-        ImGui::SetNextWindowSize(ImVec2(370, 180), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(370, 220), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Debug Options##gh2", nullptr,
                          ImGuiWindowFlags_NoCollapse |
                          ImGuiWindowFlags_NoResize)) {
@@ -135,10 +137,18 @@ protected:
             ImGui::Separator();
             ImGui::Spacing();
 
+            ImGui::Checkbox("Unlock All Songs (bypass career)", &unlock_all_songs_);
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
             RightAlignedButtons();
             if (ImGui::Button("OK", ImVec2(80, 0))) {
                 settings_->show_fps = show_fps_;
                 settings_->show_console = show_console_;
+                settings_->unlock_all_songs = unlock_all_songs_;
+                g_unlock_all_songs = unlock_all_songs_;
                 SaveSettings(settings_path_, *settings_);
                 Close();
                 if (on_done_) on_done_();
@@ -158,6 +168,7 @@ private:
     std::function<void()> on_done_;
     bool show_fps_ = true;
     bool show_console_ = false;
+    bool unlock_all_songs_ = true;
 };
 
 // ============================================================================
